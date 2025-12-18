@@ -24,6 +24,8 @@
       padding: 10px 14px;
       border-bottom: 1px solid #e5e5e5;
       background: #ffffff;
+      z-index: 1000;
+      position: relative;
     }
 
     header strong {
@@ -46,7 +48,7 @@
 
   <header>
     <strong>Animal Law Focus</strong>
-    <span>Mapa de la industria animal en Chile (v2 en construcción)</span>
+    <span>Mapa de la industria animal en Chile (v2)</span>
   </header>
 
   <div id="map"></div>
@@ -59,59 +61,69 @@
   ></script>
 
   <script>
-   // --- CAPAS BASE ---
+    // =========================
+    // INICIALIZAR MAPA
+    // =========================
+    const map = L.map('map', {
+      center: [-33.45, -70.66], // Santiago
+      zoom: 6,
+      zoomControl: true
+    });
 
-// Satélite (imagen)
-const satellite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {
-    maxZoom: 19,
-    attribution: 'Tiles © Esri — Source: Maxar, Earthstar Geographics'
-  }
-);
+    // =========================
+    // CAPAS BASE
+    // =========================
 
-// Etiquetas: ciudades, carreteras, fronteras
-const labels = L.tileLayer(
-  'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-  {
-    maxZoom: 19,
-    attribution: 'Labels © Esri'
-  }
-);
+    // Satélite (imagen)
+    const satellite = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 19,
+        attribution:
+          'Imagery © Esri — Source: Maxar, Earthstar Geographics'
+      }
+    );
 
-// Mapa de calles (opcional, para alternar)
-const osm = L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    maxZoom: 18,
-    attribution: '&copy; OpenStreetMap contributors'
-  }
-);
+    // Etiquetas: ciudades, fronteras, carreteras
+    const labels = L.tileLayer(
+      'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      {
+        maxZoom: 19,
+        attribution: 'Labels © Esri',
+        pane: 'overlayPane'
+      }
+    );
 
-// Añadir capas por defecto
-satellite.addTo(map);
-labels.addTo(map);
+    // Mapa clásico (OpenStreetMap)
+    const osm = L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        maxZoom: 18,
+        attribution: '&copy; OpenStreetMap contributors'
+      }
+    );
 
-// Control de capas
-L.control.layers(
-  {
-    "Satélite": satellite,
-    "Mapa": osm
-  },
-  {
-    "Etiquetas": labels
-  }
-).addTo(map);
+    // =========================
+    // AÑADIR CAPAS POR DEFECTO
+    // =========================
+    satellite.addTo(map);
+    labels.addTo(map);
 
-  // Capa base satelital (ESRI World Imagery)
-L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {
-    maxZoom: 19,
-    attribution:
-      'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics'
-  }
-).addTo(map);
+    // =========================
+    // CONTROL DE CAPAS
+    // =========================
+    L.control.layers(
+      {
+        "Satélite": satellite,
+        "Mapa": osm
+      },
+      {
+        "Etiquetas (ciudades / límites)": labels
+      },
+      {
+        collapsed: false
+      }
+    ).addTo(map);
   </script>
 
 </body>

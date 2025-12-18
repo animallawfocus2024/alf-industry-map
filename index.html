@@ -14,7 +14,19 @@
   />
 
   <style>
-    html, body {
+    html, body {<div id="floating-panel">
+  <h3>Animal Law Focus</h3>
+  <p>
+    Mapa de la industria animal en Chile (v2)
+    <br>
+    <small>
+      Basado en la versión beta creada por Cole Haynes
+      <br>
+      en colaboración con Animal Law Focus
+    </small>
+  </p>
+</div>
+
       height: 100%;
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
@@ -43,28 +55,37 @@
       height: calc(100vh - 58px);
     }
   </style>
+ <style>
   #floating-panel {
-  position: absolute;
-  top: 80px;
-  left: 20px;
-  width: 260px;
-  background: white;
-  border-radius: 8px;
-  padding: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-  z-index: 1000;
-}
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    width: 260px;
+    background: white;
+    border-radius: 8px;
+    padding: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+    z-index: 1000;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  }
 
-#floating-panel h3 {
-  margin: 0 0 6px 0;
-  font-size: 16px;
-}
+  #floating-panel h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+  }
 
-#floating-panel p {
-  margin: 0;
-  font-size: 13px;
-  color: #555;
-}
+  #floating-panel p {
+    margin: 0;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+  }
+
+  #floating-panel small {
+    color: #777;
+    font-size: 11px;
+  }
+</style>
 
 </head>
 <body>

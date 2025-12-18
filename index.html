@@ -1,174 +1,136 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Mapa Industria Animal – Animal Law Focus</title>
+  <title>Animal Law Focus – Mapa Industria Animal Chile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-  />
+  <!-- Google Maps API -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQ7VDoc_gPwmcZHtiCmAWGXPtcosZSzfM&v=weekly"
+    defer
+  ></script>
 
   <style>
- #floating-panel {
-  position: fixed;
-  top: 100px;
-  left: 20px;
-  width: 300px;
-  background: white;
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-  z-index: 9999;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-
-
-    header {
-      padding: 10px 14px;
-      border-bottom: 1px solid #e5e5e5;
-      background: #ffffff;
-      z-index: 1000;
-      position: relative;
-    }
-
-    header strong {
-      display: block;
-      font-size: 16px;
-    }
-
-    header span {
-      font-size: 13px;
-      color: #555;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
     }
 
     #map {
+      height: 100%;
       width: 100%;
-      height: calc(100vh - 58px);
+    }
+
+    /* =========================
+       PANEL FLOTANTE PRINCIPAL
+       ========================= */
+    #floating-panel {
+      position: fixed;
+      top: 90px;
+      left: 20px;
+      width: 320px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      z-index: 9999;
+    }
+
+    #floating-panel h1 {
+      font-size: 18px;
+      margin: 0 0 4px 0;
+    }
+
+    #floating-panel p {
+      font-size: 13px;
+      margin: 0;
+      color: #444;
+    }
+
+    #floating-panel .credit {
+      margin-top: 12px;
+      font-size: 11px;
+      color: #666;
+      line-height: 1.4;
+    }
+
+    /* =========================
+       CABECERA SUPERIOR
+       ========================= */
+    #top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: white;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      z-index: 9998;
+    }
+
+    #top-bar h2 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    #top-bar span {
+      margin-left: 12px;
+      font-size: 14px;
+      color: #666;
     }
   </style>
- <style>
-  #floating-panel {
-    position: absolute;
-    top: 80px;
-    left: 20px;
-    width: 260px;
-    background: white;
-    border-radius: 8px;
-    padding: 14px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-    z-index: 1000;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  #floating-panel h3 {
-    margin: 0 0 6px 0;
-    font-size: 16px;
-  }
-
-  #floating-panel p {
-    margin: 0;
-    font-size: 13px;
-    color: #555;
-    line-height: 1.4;
-  }
-
-  #floating-panel small {
-    color: #777;
-    font-size: 11px;
-  }
-</style>
-
 </head>
+
 <body>
 
-  <header>
-    <strong>Animal Law Focus</strong>
+  <!-- BARRA SUPERIOR -->
+  <div id="top-bar">
+    <h2>Animal Law Focus</h2>
     <span>Mapa de la industria animal en Chile (v2)</span>
-  </header>
+  </div>
 
+  <!-- PANEL FLOTANTE -->
+  <div id="floating-panel">
+    <h1>Panel de control</h1>
+    <p>(en construcción)</p>
+
+    <div class="credit">
+      Versión 2 basada en la versión beta creada por<br>
+      <strong>Cole Haynes</strong>, en colaboración con<br>
+      <strong>Animal Law Focus</strong>.
+    </div>
+  </div>
+
+  <!-- MAPA -->
   <div id="map"></div>
-  <!-- Caja flotante -->
-<div id="floating-panel">
-  <h3>Panel de control</h3>
-  <p>(en construcción)</p>
-</div>
-
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""
-  ></script>
 
   <script>
-    // =========================
-    // INICIALIZAR MAPA
-    // =========================
-    const map = L.map('map', {
-      center: [-33.45, -70.66], // Santiago
-      zoom: 6,
-      zoomControl: true
-    });
+    function initMap() {
+      const chile = { lat: -33.45, lng: -70.66 };
 
-    // =========================
-    // CAPAS BASE
-    // =========================
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: chile,
+        zoom: 5,
+        mapTypeId: "satellite",
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DEFAULT,
+          position: google.maps.ControlPosition.TOP_RIGHT
+        },
+        fullscreenControl: false,
+        streetViewControl: false,
+        gestureHandling: "greedy"
+      });
+    }
 
-    // Satélite (imagen)
-    const satellite = L.tileLayer(
-      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-      {
-        maxZoom: 19,
-        attribution:
-          'Imagery © Esri — Source: Maxar, Earthstar Geographics'
-      }
-    );
-
-    // Etiquetas: ciudades, fronteras, carreteras
-    const labels = L.tileLayer(
-      'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
-      {
-        maxZoom: 19,
-        attribution: 'Labels © Esri',
-        pane: 'overlayPane'
-      }
-    );
-
-    // Mapa clásico (OpenStreetMap)
-    const osm = L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      {
-        maxZoom: 18,
-        attribution: '&copy; OpenStreetMap contributors'
-      }
-    );
-
-    // =========================
-    // AÑADIR CAPAS POR DEFECTO
-    // =========================
-    satellite.addTo(map);
-    labels.addTo(map);
-
-    // =========================
-    // CONTROL DE CAPAS
-    // =========================
-    L.control.layers(
-      {
-        "Satélite": satellite,
-        "Mapa": osm
-      },
-      {
-        "Etiquetas (ciudades / límites)": labels
-      },
-      {
-        collapsed: false
-      }
-    ).addTo(map);
+    window.initMap = initMap;
   </script>
 
 </body>

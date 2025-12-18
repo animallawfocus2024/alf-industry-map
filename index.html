@@ -59,8 +59,49 @@
   ></script>
 
   <script>
-    // Crear el mapa centrado en Chile
-    const map = L.map('map').setView([-33.45, -70.66], 6);
+   // --- CAPAS BASE ---
+
+// Satélite (imagen)
+const satellite = L.tileLayer(
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {
+    maxZoom: 19,
+    attribution: 'Tiles © Esri — Source: Maxar, Earthstar Geographics'
+  }
+);
+
+// Etiquetas: ciudades, carreteras, fronteras
+const labels = L.tileLayer(
+  'https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+  {
+    maxZoom: 19,
+    attribution: 'Labels © Esri'
+  }
+);
+
+// Mapa de calles (opcional, para alternar)
+const osm = L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors'
+  }
+);
+
+// Añadir capas por defecto
+satellite.addTo(map);
+labels.addTo(map);
+
+// Control de capas
+L.control.layers(
+  {
+    "Satélite": satellite,
+    "Mapa": osm
+  },
+  {
+    "Etiquetas": labels
+  }
+).addTo(map);
 
   // Capa base satelital (ESRI World Imagery)
 L.tileLayer(
